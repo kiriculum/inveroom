@@ -1,0 +1,8 @@
+django
+django-environ
+django-cors-headers
+psycopg2
+djangorestframework
+djangorestframework_simplejwt
+Pillow
+djoser

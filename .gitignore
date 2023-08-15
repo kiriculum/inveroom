@@ -1,0 +1,6 @@
+**/.env
+**.mo
+**/.next/
+**/node_modules/
+media/
+.idea/
