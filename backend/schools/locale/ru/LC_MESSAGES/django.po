@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-06 19:06+0000\n"
+"POT-Creation-Date: 2023-08-15 10:05+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,78 +20,87 @@ msgstr ""
 "n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || "
 "(n%100>=11 && n%100<=14)? 2 : 3);\n"
 
-#: admin.py:7
+#: schools/admin.py:6
 msgid "Administration"
 msgstr "Администрирование"
 
-#: models.py:9
+#: schools/models.py:9
 msgid "User"
 msgstr "Пользователь"
 
-#: models.py:10
+#: schools/models.py:10
 msgid "Users"
 msgstr "Пользователи"
 
-#: models.py:14
+#: schools/models.py:14 schools/models.py:64
 msgid "name"
 msgstr "название"
 
-#: models.py:29
+#: schools/models.py:29
 msgid "address"
 msgstr "адрес"
 
-#: models.py:36
+#: schools/models.py:36
 msgid "Location can not be a sublocation to itself"
 msgstr ""
 
-#: models.py:39
+#: schools/models.py:39
 msgid "Location"
 msgstr "Место"
 
-#: models.py:40
+#: schools/models.py:40
 msgid "Locations"
 msgstr "Места"
 
-#: models.py:47
+#: schools/models.py:47 schools/models.py:54
 msgid "Room"
 msgstr "Комната"
 
-#: models.py:48
+#: schools/models.py:48
 msgid "Rooms"
 msgstr "Комнаты"
 
-#: models.py:55 models.py:66
-msgid "Quantity"
-msgstr "Количество"
+#: schools/models.py:52 schools/models.py:65 schools/models.py:99
+msgid "Expendables"
+msgstr "Расходники"
 
-#: models.py:58
+#: schools/models.py:59
 msgid "Device"
 msgstr "Устройство"
 
-#: models.py:59
+#: schools/models.py:60
 msgid "Devices"
 msgstr "Устройства"
 
-#: models.py:72
-msgid "Component"
-msgstr "Компонент"
-
-#: models.py:73
+#: schools/models.py:67 schools/models.py:85
 msgid "Components"
 msgstr "Компоненты"
 
-#: models.py:80
+#: schools/models.py:71
+msgid "Device template"
+msgstr ""
+
+#: schools/models.py:72
+#, fuzzy
+#| msgid "Devices"
+msgid "Device templates"
+msgstr "Устройства"
+
+#: schools/models.py:84
+msgid "Component"
+msgstr "Компонент"
+
+#: schools/models.py:92
 msgid "Component type"
 msgstr "Тип компонента"
 
-#: models.py:81
+#: schools/models.py:93
 msgid "Component types"
 msgstr "Типы компонентов"
 
-#: models.py:86
+#: schools/models.py:98
 msgid "Expendable"
 msgstr "Расходник"
 
-#: models.py:87
-msgid "Expendables"
-msgstr "Расходники"
+#~ msgid "Quantity"
+#~ msgstr "Количество"

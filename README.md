@@ -1,3 +1,3 @@
 # Inveroom
 
-### Inventory app for keep all the data in one place
+### Inventory app for keeping all the data in one place

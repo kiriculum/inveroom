@@ -11,7 +11,7 @@ class User(AbstractUser):
 
 
 class NamedModel(models.Model):
-    name = models.TextField(_('name'), max_length=256)
+    name = models.TextField(_('name'), max_length=256, blank=True, default='')
 
     def __str__(self):
         return self.name
@@ -41,7 +41,7 @@ class Location(NamedModel):
 
 
 class Room(NamedModel):
-    location = models.ForeignKey('Location', related_name='rooms', null=True, on_delete=models.SET_NULL)
+    location = models.ForeignKey('Location', related_name='rooms', on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = _('Room')
@@ -61,7 +61,7 @@ class Device(NamedModel):
 
 
 class DeviceTemplate(models.Model):
-    name = models.TextField(_('name'), unique=True, max_length=256)
+    name = models.TextField(_('name'), blank=True, default='', max_length=256)
     expendables = models.ManyToManyField('Expendable', blank=True, verbose_name=_('Expendables'),
                                          related_name='templates')
     components = models.ManyToManyField('ComponentVariant', blank=True, verbose_name=_('Components'),

@@ -5,7 +5,7 @@ from .models import Location, Room, Device, Component, ComponentVariant, Expenda
 
 admin.site.site_header = _('Administration')
 admin.site.site_title = 'Inveroom'
-admin.site.register([Location, ComponentVariant, Expendable])
+admin.site.register([ComponentVariant, Expendable])
 
 
 class ComponentInline(admin.TabularInline):
@@ -19,9 +19,14 @@ class DeviceInline(admin.TabularInline):
     extra = 0
 
 
+@admin.register(Location)
+class LocationAdmin(admin.ModelAdmin):
+    list_display = ['id', 'name', 'address', 'up_loc']
+
+
 @admin.register(Component)
 class ComponentAdmin(admin.ModelAdmin):
-    list_display = ['device', 'variant', 'sn']
+    list_display = ['variant', 'device', 'sn']
 
 
 @admin.register(Room)
@@ -33,7 +38,7 @@ class RoomAdmin(admin.ModelAdmin):
 
 @admin.register(Device)
 class DeviceAdmin(admin.ModelAdmin):
-    fields = [('name', 'sn'), ('room', 'expendables')]
+    fields = [('name', 'sn', 'inv'), ('room', 'expendables')]
     list_display = ['name', 'room', 'sn', 'inv']
     inlines = [ComponentInline]
 

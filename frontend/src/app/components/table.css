@@ -1,0 +1,19 @@
+.p-speeddial-button.p-button-icon-only[type="button"] {
+  width: 2rem;
+  height: 2rem;
+  background-color: var(--background-color);
+  color: var(--foreground-color);
+}
+
+.p-speeddial {
+  position: inherit;
+}
+
+.p-speeddial-action {
+  width: 2rem;
+  height: 2rem;
+}
+
+.p-inputtext {
+  padding: 0.25rem 0.5rem;
+}

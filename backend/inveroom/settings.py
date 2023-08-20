@@ -107,11 +107,15 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        ('rest_framework.permissions.IsAuthenticated',)
     )
 }
 
 SIMPLE_JWT = {
-    'AUTH_HEADER_TYPES': ('BEARER', 'JWT',),
+    'AUTH_HEADER_TYPES': ('Bearer', 'JWT',),
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=10),
     "REFRESH_TOKEN_LIFETIME": timedelta(hours=2),
     "ROTATE_REFRESH_TOKENS": True,
@@ -121,6 +125,7 @@ SIMPLE_JWT = {
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
     'http://127.0.0.1:3000',
+    env('FRONTEND_HOST'),
 ]
 
 LANGUAGE_CODE = 'ru'
