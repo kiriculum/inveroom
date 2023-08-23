@@ -17,3 +17,26 @@
 .p-inputtext {
   padding: 0.25rem 0.5rem;
 }
+
+.p-listbox .p-inputtext {
+  width: 100%;
+  border: initial;
+  padding: 0.25rem 1rem;
+}
+
+.p-sidebar-right .p-sidebar {
+  width: 20rem;
+}
+
+.p-listbox .p-listbox-list {
+  padding: 0px;
+}
+
+.p-listbox .p-listbox-list .p-listbox-item {
+
+  padding: 0px;
+}
+
+.p-autocomplete.p-component.p-inputwrapper{
+  width: 100%;
+}

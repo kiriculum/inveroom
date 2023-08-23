@@ -1,11 +1,13 @@
 "use client";
 
 import { MenuItem } from "primereact/menuitem";
+import { Sidebar } from "primereact/sidebar";
 import { SpeedDial } from "primereact/speeddial";
 import {
   Tree,
   TreeDragDropEvent,
   TreeExpandedKeysType,
+  TreeNodeDoubleClickEvent,
   TreeNodeTemplateOptions,
 } from "primereact/tree";
 import { TreeNode } from "primereact/treenode";
@@ -13,10 +15,11 @@ import { classNames } from "primereact/utils";
 import { useState } from "react";
 import useSWRImmutabled from "swr/immutable";
 import { Device, Location, Room, ViewSet } from "types";
+import { useAuth } from "./auth";
 import { NodeDeleteBtn, NodeEditBtn, TreeInput } from "./input";
 import { useClient } from "./private";
+import { SidebarDeviceContent } from "./sidebar";
 import "./table.css";
-import { useAuth } from "./auth";
 
 function createNode(
   value: Location | Device | Room,
@@ -60,9 +63,10 @@ async function populate(
 
 export function Table() {
   const [_, setRerender] = useState({});
+  const [sidebarNode, setSidebar] = useState<TreeNode | null>(null);
   const [expandedKeys, setExpandedKeys] = useState<TreeExpandedKeysType>({});
-  const { location, room, device } = useClient();
   const [edit, setEdit] = useState<string | number | undefined>(undefined);
+  const { location, room, device } = useClient();
   const { logout } = useAuth();
 
   const { data, isLoading, error, mutate } = useSWRImmutabled(
@@ -214,7 +218,7 @@ export function Table() {
   const nodeTemplate = (node: TreeNode, options: TreeNodeTemplateOptions) => {
     const model: MenuItem[] | undefined = getModels(node);
     const labelLeaf = (
-      <div className="grid gap-2 grid-cols-3 md:grid-cols-[1fr_auto_auto] content-end items-center">
+      <div className="grid gap-2 md:grid-cols-[1fr_auto_auto] content-end items-center">
         <div>
           <div className="inline">{node.label}</div>
           <NodeEditBtn
@@ -226,10 +230,10 @@ export function Table() {
             onClick={onDelete(node)}
           ></NodeDeleteBtn>
         </div>
-        <div className="md:min-w-[11rem] grid self-center">
+        <div className="hidden lg:block md:min-w-[11rem] self-center">
           {node.data.sn && `SN: ${node.data.sn}`}
         </div>
-        <div className="md:min-w-[11rem] self-center">
+        <div className="hidden lg:block md:min-w-[11rem] self-center">
           {node.data.inv && `INV: ${node.data.inv}`}
         </div>
       </div>
@@ -243,7 +247,7 @@ export function Table() {
           <NodeDeleteBtn onClick={onDelete(node)}></NodeDeleteBtn>
           {model && <SpeedDial model={model} direction="right" />}
         </div>
-        <div>
+        <div className="hidden lg:block">
           {getNodeType(node) === "location" && <div>{node.data.address}</div>}
         </div>
       </div>
@@ -281,7 +285,7 @@ export function Table() {
     if (!data) return;
     const dragNode = e.dragNode as TreeNode;
     const dropNode = e.dropNode as TreeNode;
-    const dropKey = dropNode.key?.toString();
+
     const dragKey = dragNode.key?.toString();
 
     if (!dropNode) {
@@ -292,6 +296,8 @@ export function Table() {
       }
       return;
     }
+
+    const dropKey = dropNode.key?.toString();
 
     if (dragKey?.startsWith("device#") && dropKey?.startsWith("room#")) {
       await device.patch({ room: dropNode.data.id }, dragNode.data.id);
@@ -334,6 +340,9 @@ export function Table() {
     }
   };
 
+  const onNodeDoubleClick = (e: TreeNodeDoubleClickEvent) =>
+    getNodeType(e.node) === "device" && setSidebar(e.node);
+
   if (error) return <div>Error</div>;
 
   return (
@@ -356,7 +365,7 @@ export function Table() {
       </div>
       <Tree
         filter
-        className="dark:bg-slate-800 dark:text-slate-100 overflow-auto"
+        className="dark:bg-slate-800 dark:text-slate-100 overflow-auto w-"
         value={data}
         loading={isLoading}
         filterBy="label,data.sn,data.inv"
@@ -365,7 +374,28 @@ export function Table() {
         onDragDrop={onDragDrop}
         expandedKeys={expandedKeys}
         onToggle={(e) => setExpandedKeys(e.value)}
+        onNodeDoubleClick={onNodeDoubleClick}
       ></Tree>
+      <Sidebar
+        visible={Boolean(sidebarNode)}
+        onHide={async () => {
+          if (sidebarNode?.data) {
+            await device.patch(
+              {
+                name: sidebarNode.data.name,
+                inv: sidebarNode.data.inv,
+                sn: sidebarNode.data.sn,
+                expendables: sidebarNode.data.expendables,
+              },
+              sidebarNode.data.id
+            );
+          }
+          setSidebar(null);
+        }}
+        position="right"
+      >
+        <SidebarDeviceContent node={sidebarNode}></SidebarDeviceContent>
+      </Sidebar>
     </>
   );
 }

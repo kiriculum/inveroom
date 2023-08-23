@@ -74,7 +74,7 @@ class DeviceTemplate(models.Model):
 
 class Component(models.Model):
     device = models.ForeignKey('device', related_name='components', on_delete=models.CASCADE)
-    variant = models.ForeignKey('ComponentVariant', related_name='components', null=True, on_delete=models.SET_NULL)
+    variant = models.ForeignKey('ComponentVariant', related_name='components', on_delete=models.CASCADE)
     sn = models.TextField('SN', max_length=256, blank=True, default="")
 
     def __str__(self):

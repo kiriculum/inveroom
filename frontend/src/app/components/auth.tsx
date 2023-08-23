@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { ReactNode, createContext, useContext, useState } from "react";
 import { decodeToken } from "react-jwt";
 import { AuthAPI } from "service/api";
-import useSWRImmutable from "swr/immutable";
+import useSWR from "swr";
 import { AuthContextType, DecodedJWT, JWT, LayoutProps, Session } from "types";
 import { Login } from "./login";
 
@@ -54,7 +54,7 @@ export function AuthProvider({ children }: LayoutProps) {
   const auth = (jwt: JWT) => {
     localStorage.setItem("user", JSON.stringify(jwt));
     const res = checkJWT(jwt);
-    if (!res) return logout();
+    if (!res || !res.isAuth) return logout();
     setSession((s) => {
       return {
         ...s,
@@ -102,7 +102,7 @@ export function useAuth() {
     if (session.stale) setSession({ ...session, stale: false });
   }
 
-  useSWRImmutable([session.decodedToken?.exp, session.jwt.refresh], postInit, {
+  useSWR([session.decodedToken?.exp, session.jwt.refresh], postInit, {
     refreshInterval: 10000,
   });
 

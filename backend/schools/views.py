@@ -1,6 +1,10 @@
+from rest_framework import status
 from rest_framework import viewsets
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
-from .serializers import CommonSerializers
+from .models import Component
+from .serializers import CommonSerializers, ComponentSerializer, ComponentVariantSerializer
 
 
 class CommonViewSetMeta(type):
@@ -16,8 +20,20 @@ class CommonViewSetMeta(type):
 class CommonViewSets(metaclass=CommonViewSetMeta):
     LocationViewSet = CommonSerializers.LocationSerializer
     RoomViewSet = CommonSerializers.RoomSerializer
-    DeviceViewSet = CommonSerializers.DeviceSerializer
-    ComponentViewSet = CommonSerializers.ComponentSerializer
-    ComponentVariantViewSet = CommonSerializers.ComponentVariantSerializer
+    ComponentViewSet = ComponentSerializer
+    ComponentVariantViewSet = ComponentVariantSerializer
     ExpandableViewSet = CommonSerializers.ExpendableSerializer
     DeviceTemplateViewSet = CommonSerializers.DeviceTemplateSerializer
+
+
+class DeviceViewSet(viewsets.ModelViewSet):
+    queryset = CommonSerializers.DeviceSerializer.Meta.model.objects.all()
+    serializer_class = CommonSerializers.DeviceSerializer
+
+    @action(detail=True, methods=['GET'])
+    def components(self, _request, pk=None):
+        try:
+            query = Component.objects.filter(device=pk).order_by('variant__name')
+            return Response(ComponentSerializer(query, many=True).data)
+        except self.serializer_class.Meta.model.DoesNotExist:
+            return Response({'detail': 'No such device'}, status=status.HTTP_400_BAD_REQUEST)

@@ -13,12 +13,13 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 export function getAPI<IN extends Record<string, any> | void, OUT, OPT = void>(
   endpoint: string,
   method: Method,
-  headers?: HeadersInit
+  headers?: HeadersInit,
+  suffix: string = ""
 ) {
   return async (data: IN, pk: number | void) => {
     try {
       const lookup = pk ? `${pk}/` : "";
-      const response = await fetch(`${API_URL}${endpoint}${lookup}`, {
+      const response = await fetch(`${API_URL}${endpoint}${lookup}${suffix}`, {
         method,
         body: data ? JSON.stringify({ ...data }) : null,
         headers: headers || { "Content-type": "application/json" },
@@ -43,9 +44,10 @@ export function getClientAPI<
   path: string,
   method: Method,
   unAuthHandler: () => void,
-  headers?: HeadersInit
+  headers?: HeadersInit,
+  suffix: string = ""
 ) {
-  const worker = getAPI<IN, OUT, OPT>(path, method, headers);
+  const worker = getAPI<IN, OUT, OPT>(path, method, headers, suffix);
 
   return async (input: IN, lookup: number | void) => {
     const error = new Error();

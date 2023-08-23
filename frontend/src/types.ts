@@ -86,7 +86,9 @@ export type ClientAPIRequest<IN extends Record<string, any> | void, OUT> = (
 export type ClientContextType = {
   location: ViewSet<Location>;
   room: ViewSet<Room>;
-  device: ViewSet<Device>;
+  device: ViewSet<Device> & DeviceViewSet;
+  component: ViewSet<Component>;
+  variant: ViewSet<ComponentVariant>;
 };
 
 export interface Named {
@@ -114,9 +116,10 @@ export interface Component {
   id: number;
   device: number;
   sn: string;
+  variant: ComponentVariant;
 }
 
-export interface ComponentVarian extends Named {
+export interface ComponentVariant extends Named {
   image?: string;
 }
 
@@ -139,4 +142,8 @@ export type ViewSet<T> = {
   update: RestAPI<Omit<T, "id">, T, number>;
   patch: RestAPI<Omit<Partial<T>, "id">, T, number>;
   delete: RestAPI<void, void, number>;
+};
+
+export type DeviceViewSet = {
+  components: RestAPI<void, Component[], number>;
 };

@@ -1,8 +1,13 @@
 "use client";
 import { createContext, useContext } from "react";
 import { getClientAPI } from "service/api";
-import type { Device, Location, Room } from "types";
-import { ClientContextType, LayoutProps, Method } from "types";
+import type { Component, Device, Location, Room } from "types";
+import {
+  ClientContextType,
+  ComponentVariant,
+  LayoutProps,
+  Method,
+} from "types";
 import { useAuth } from "./auth";
 
 const PrivateContext = createContext<ClientContextType | null>(null);
@@ -12,8 +17,9 @@ export function PrivateProvider({ children }: LayoutProps) {
 
   const useClientAPI = <IN extends Record<string, any> | void, OUT, OPT = void>(
     path: string,
-    method: Method = "GET"
-  ) => getClientAPI<IN, OUT, OPT>(path, method, logout, headers);
+    method: Method = "GET",
+    suffix: string = ""
+  ) => getClientAPI<IN, OUT, OPT>(path, method, logout, headers, suffix);
 
   const useViewSet = <T extends Record<string, any>>(path: string) => {
     return {
@@ -28,10 +34,22 @@ export function PrivateProvider({ children }: LayoutProps) {
 
   const location = useViewSet<Location>("locations/");
   const room = useViewSet<Room>("rooms/");
-  const device = useViewSet<Device>("devices/");
+  const component = useViewSet<Component>("components/");
+  const variant = useViewSet<ComponentVariant>("variants/");
+
+  const device = {
+    ...useViewSet<Device>("devices/"),
+    components: useClientAPI<void, Component[]>(
+      "devices/",
+      "GET",
+      "components/"
+    ),
+  };
 
   return (
-    <PrivateContext.Provider value={{ location, room, device }}>
+    <PrivateContext.Provider
+      value={{ location, room, device, component, variant }}
+    >
       {children}
     </PrivateContext.Provider>
   );
