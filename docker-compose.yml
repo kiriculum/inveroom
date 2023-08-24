@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  nginx:
+    build: ./nginx
+    ports:
+      - '8000:8000'
+      - '8080:8080'
+    restart: always
+    depends_on:
+      - frontend
+      - backend
+    volumes:
+      - static:/var/www/inveroom/static
+      - media:/var/www/inveroom/media
+  backend:
+    build:
+      context: ./backend
+      args:
+        DJANGO_SECRET: "${DJANGO_SECRET}"
+        FRONTEND_HOST: "${FRONTEND_HOST}"
+    restart: always
+    environment:
+      FRONTEND_HOST: "${FRONTEND_HOST}"
+      DJANGO_SECRET: "${DJANGO_SECRET}"
+      DATABASE_HOST: db
+    expose:
+      - 8000
+    depends_on:
+      - db
+    volumes:
+      - static:/home/inveroom/app/static
+      - media:/home/inveroom/app/media
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        NEXT_PUBLIC_BACKEND_HOST: "${BACKEND_HOST}"
+    restart: always
+    expose:
+      - 8000
+  db:
+    image: postgres:alpine
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgres
+    expose:
+      - 5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+
+volumes:
+  postgres_data:
+  static:
+  media:

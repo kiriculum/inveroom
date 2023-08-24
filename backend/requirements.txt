@@ -6,3 +6,4 @@ djangorestframework
 djangorestframework_simplejwt
 Pillow
 djoser
+uvicorn

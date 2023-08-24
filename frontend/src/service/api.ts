@@ -8,7 +8,9 @@ import {
   Username,
 } from "types";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const BACKEND_HOST = process.env.NEXT_PUBLIC_BACKEND_HOST;
+
+const API_URL = BACKEND_HOST + "api/";
 
 export function getAPI<IN extends Record<string, any> | void, OUT, OPT = void>(
   endpoint: string,

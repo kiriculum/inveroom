@@ -1,23 +1,19 @@
 from datetime import timedelta
 from pathlib import Path
 
-from environ import Env
+from environ import FileAwareEnv
 
 BASE_DIR = Path(__file__).resolve().parent
 ROOT_DIR = BASE_DIR.parent
 
-env = Env(DEBUG=(bool, False))
+env = FileAwareEnv()
 env.read_env(ROOT_DIR / '.env')
 
-# SECURITY WARNING: keep the secret key used in production secret!
+FRONTEND_HOST = env('FRONTEND_HOST')
 SECRET_KEY = env('DJANGO_SECRET')
+DEBUG = env('DJANGO_DEBUG', default=False)
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env('DJANGO_DEBUG')
-
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
-
-# Application definition
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', FRONTEND_HOST]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -65,22 +61,16 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'inveroom.wsgi.application'
 
-# Database
-# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'HOST': env('DATABASE_HOST'),
-        'PORT': env('DATABASE_PORT'),
-        'USER': env('DATABASE_USER'),
-        'PASSWORD': env('DATABASE_PASSWORD'),
-        'NAME': env('DATABASE_NAME'),
+        'HOST': env('DATABASE_HOST', default='localhost'),
+        'PORT': env('DATABASE_PORT', default=5432),
+        'USER': env('DATABASE_USER', default='postgres'),
+        'PASSWORD': env('DATABASE_PASSWORD', default='postgres'),
+        'NAME': env('DATABASE_NAME', default='postgres'),
     }
 }
-
-# Password validation
-# https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -96,9 +86,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
-# Internationalization
-# https://docs.djangoproject.com/en/4.2/topics/i18n/
 
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': [
@@ -124,8 +111,7 @@ SIMPLE_JWT = {
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
-    'http://127.0.0.1:3000',
-    env('FRONTEND_HOST'),
+    FRONTEND_HOST,
 ]
 
 LANGUAGE_CODE = 'ru'
@@ -135,15 +121,15 @@ TIME_ZONE = 'Europe/Moscow'
 USE_I18N = True
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.2/howto/static-files/
-
 AUTH_USER_MODEL = 'schools.User'
 
-STATIC_URL = 'static/'
+STATIC_ROOT = ROOT_DIR / 'static'
 MEDIA_ROOT = ROOT_DIR / 'media'
+MEDIA_URL = 'media/'
+STATIC_URL = 'static/'
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
+if not DEBUG:
+    MEDIA_URL = FRONTEND_HOST + MEDIA_URL
+    STATIC_URL = FRONTEND_HOST + STATIC_URL
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

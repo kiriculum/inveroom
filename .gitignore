@@ -2,5 +2,6 @@
 **.mo
 **/.next/
 **/node_modules/
-media/
+**media/
 .idea/
+**/static/
