@@ -1,7 +1,8 @@
 FROM python:alpine
 
 ARG DJANGO_SECRET
-ARG FRONTEND_HOST
+ARG FRONTEND_URL
+ARG BACKEND_HOST
 
 RUN apk add --no-cache gcc musl-dev python3-dev libpq-dev gettext
 RUN pip install --upgrade pip

@@ -1,19 +1,20 @@
 from datetime import timedelta
 from pathlib import Path
 
-from environ import FileAwareEnv
+from environ import Env
 
 BASE_DIR = Path(__file__).resolve().parent
 ROOT_DIR = BASE_DIR.parent
 
-env = FileAwareEnv()
+env = Env()
 env.read_env(ROOT_DIR / '.env')
 
-FRONTEND_HOST = env('FRONTEND_HOST')
+FRONTEND_URL = env('FRONTEND_URL')
+BACKEND_HOST = env('BACKEND_HOST')
 SECRET_KEY = env('DJANGO_SECRET')
 DEBUG = env('DJANGO_DEBUG', default=False)
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', FRONTEND_HOST]
+ALLOWED_HOSTS = [BACKEND_HOST]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -111,7 +112,7 @@ SIMPLE_JWT = {
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
-    FRONTEND_HOST,
+    FRONTEND_URL.rstrip('/'),
 ]
 
 LANGUAGE_CODE = 'ru'
@@ -129,7 +130,7 @@ MEDIA_URL = 'media/'
 STATIC_URL = 'static/'
 
 if not DEBUG:
-    MEDIA_URL = FRONTEND_HOST + MEDIA_URL
-    STATIC_URL = FRONTEND_HOST + STATIC_URL
+    MEDIA_URL = FRONTEND_URL + MEDIA_URL
+    STATIC_URL = FRONTEND_URL + STATIC_URL
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

@@ -18,11 +18,13 @@ services:
       context: ./backend
       args:
         DJANGO_SECRET: "${DJANGO_SECRET}"
-        FRONTEND_HOST: "${FRONTEND_HOST}"
+        FRONTEND_URL: "${FRONTEND_URL}"
+        BACKEND_HOST: "${BACKEND_HOST}"
     restart: always
     environment:
-      FRONTEND_HOST: "${FRONTEND_HOST}"
+      FRONTEND_URL: "${FRONTEND_URL}"
       DJANGO_SECRET: "${DJANGO_SECRET}"
+      BACKEND_HOST: "${BACKEND_HOST}"
       DATABASE_HOST: db
     expose:
       - 8000
@@ -35,7 +37,7 @@ services:
     build:
       context: ./frontend
       args:
-        NEXT_PUBLIC_BACKEND_HOST: "${BACKEND_HOST}"
+        NEXT_PUBLIC_BACKEND_HOST: "${BACKEND_URL}"
     restart: always
     expose:
       - 8000
